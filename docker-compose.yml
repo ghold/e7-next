@@ -1,0 +1,6 @@
+services:
+  e7-gear:
+    build: .
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
