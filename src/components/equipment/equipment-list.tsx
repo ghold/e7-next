@@ -68,6 +68,7 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { key: 'bestRule', label: '最佳规则', visible: true },
   { key: 'bestScore', label: '规则分', visible: true },
   { key: 'potentialScore', label: '潜能分', visible: true },
+  { key: 'ct', label: '获得时间', visible: true },
 ];
 
 // 85级装备重铸后的主属性值
@@ -231,6 +232,7 @@ export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: Equipm
         case 'score': aVal = calculateEquipmentScore(a); bVal = calculateEquipmentScore(b); break;
         case 'bestScore': aVal = a.bestScore || 0; bVal = b.bestScore || 0; break;
         case 'potentialScore': aVal = a.potentialScore || 0; bVal = b.potentialScore || 0; break;
+        case 'ct': aVal = a.ct || 0; bVal = b.ct || 0; break;
         case 'bestRule': aVal = a.bestRule || ''; bVal = b.bestRule || ''; return sortDirection === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
         case 'set': aVal = SetTypeDisplay[a.set] || a.set; bVal = SetTypeDisplay[b.set] || b.set; return sortDirection === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
         case 'type': aVal = EquipmentTypeDisplay[a.type] || a.type; bVal = EquipmentTypeDisplay[b.type] || b.type; return sortDirection === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
@@ -294,6 +296,7 @@ export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: Equipm
       case 'bestRule': return <span className="text-xs text-steel-300">{eq.bestRule || '—'}</span>;
       case 'bestScore': return <span className="font-mono text-xs data-text">{eq.bestScore?.toFixed(2) || '—'}</span>;
       case 'potentialScore': return <span className="font-mono text-xs text-accent-green-dim data-text">{(eq.potentialScore || 0).toFixed(2)}</span>;
+      case 'ct': return <span className="font-mono text-xs text-steel-400">{eq.ct ? new Date(eq.ct * 1000).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}</span>;
       case 'speed': return <SubstatCell eq={eq} statType={StatType.SPEED} />;
       case 'attackPercent': return <SubstatCell eq={eq} statType={StatType.ATTACK_PERCENT} />;
       case 'defensePercent': return <SubstatCell eq={eq} statType={StatType.DEFENSE_PERCENT} />;
