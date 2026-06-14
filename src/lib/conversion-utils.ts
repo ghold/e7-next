@@ -61,7 +61,7 @@ export function calculatePotentialScore(equipment: Equipment, rules: EquipmentRu
 
       const ruleResults = matchEquipmentWithRules(cloned, rules);
       ruleResults.forEach(r => {
-        if (r.score !== 0) allRuleScores.push(r.score);
+        allRuleScores.push(r.score);
       });
     });
   });

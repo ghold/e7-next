@@ -476,7 +476,7 @@ export class RuleEngine {
         return { score, appliedCondition: conditionSet };
       }
     }
-    return { score: 0 };
+    return { score: -1000 };
   }
 
   private evaluateCondition(condition: ScoreCondition, context: ScoringContext): boolean {
