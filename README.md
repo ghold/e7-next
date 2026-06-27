@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E7 装备分析工具
 
-## Getting Started
+第七史诗装备评分与筛选工具，将导出的装备数据批量打分、排名，快速识别高价值装备。
 
-First, run the development server:
+**在线体验：[https://43.139.245.150](https://43.139.245.150)**
+
+---
+
+## 功能概览
+
+**装备评分**
+- 导入游戏导出的装备 JSON，自动按规则引擎批量打分
+- 支持多角色定位评分（输出、坦克、辅助、双效等 9+ 个检测项）
+- 85 级装备自动计算精炼后属性再评分
+
+**筛选与排名**
+- 按检测项、部位、套装多维筛选
+- 得分排名一览，快速定位精品装备
+
+**副属性转化分析（换算器）**
+- 分析装备可换算的副属性组合
+- 显示每种换算方案的潜在得分上限
+
+**规则查看**
+- 内置规则表，查看各检测项的适用套装、部位、评分条件
+
+---
+
+## 快速开始（本地运行）
+
+**环境要求：** Node.js v20
 
 ```bash
+# 安装依赖
+npm install
+
+# 启动开发服务器
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# 生产构建
+npm run build && npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 装备数据导入
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+使用第三方导出工具（如 GearScore / E7 Gear Exporter）导出装备 JSON 文件，在工具首页点击导入即可。
 
-## Learn More
+数据仅存储在浏览器本地（localStorage），不上传服务器。
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 评分机制
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**基础分**按副属性加权求和：速度 ×2、爆伤 ×9/8、暴率 ×9/6，其余属性按比例折算。
 
-## Deploy on Vercel
+**有效分**只统计规则指定的有效副属性，过滤无关属性后再打分，用于精准评估特定定位装备。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+规则以 CSV 文件维护，每条规则定义：适用套装 → 部位 → 主属性 → 有效副属性范围 → 分段评分公式。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 技术栈
+
+- **框架：** Next.js 16 (App Router) + React 19
+- **样式：** Tailwind CSS v4 + shadcn/ui
+- **语言：** TypeScript
+- **部署：** Docker + Nginx（HTTPS）
+
+---
+
+## 项目结构
+
+```
+src/
+├── app/
+│   ├── page.tsx              # 装备列表主页
+│   ├── converter/            # 副属性换算器
+│   └── rules/                # 规则查看
+├── lib/
+│   ├── rule-engine.ts        # 规则匹配与评分核心
+│   ├── equipment-scoring.ts  # 属性加权公式
+│   ├── reforge-calculator.ts # 85级精炼计算
+│   └── conversion-utils.ts   # 换算潜力分析
+├── constants/                # 枚举与显示映射
+└── components/equipment/     # 装备列表、详情、导入 UI
+public/
+└── rules.csv                 # 评分规则（只读）
+```
