@@ -45,7 +45,9 @@ export const setTypeMapping: Record<string, string> = {
   '回击': 'RiposteSet',
   '逆袭': 'ReversalSet',
   '开战': 'WarfareSet',
-  '追击': 'PursuitSet'
+  '追击': 'PursuitSet',
+  '弱化': 'WeakeningSet',
+  '全力': 'FervorSet'
 };
 
 export const setNameMap: Record<string, string> = {
@@ -70,7 +72,9 @@ export const setNameMap: Record<string, string> = {
   '回击': 'riposte',
   '逆袭': 'reversal',
   '开战': 'warfare',
-  '追击': 'pursuit'
+  '追击': 'pursuit',
+  '弱化': 'weakening',
+  '全力': 'fervor'
 };
 
 export const positionMap: Record<string, string> = {

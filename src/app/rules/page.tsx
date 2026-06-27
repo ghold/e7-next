@@ -37,12 +37,6 @@ export default function RulesPage() {
           </div>
         </div>
       </main>
-
-      <footer className="border-t border-steel-800/60 py-3 text-center">
-        <span className="text-[10px] font-mono text-steel-600 tracking-wider uppercase">
-          E7 GEAR ANALYSIS SYSTEM © {new Date().getFullYear()}
-        </span>
-      </footer>
     </div>
   );
 }

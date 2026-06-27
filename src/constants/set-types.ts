@@ -22,7 +22,9 @@ export enum SetType {
   REVERSAL_SET = "ReversalSet",
   RIPOSTE_SET = "RiposteSet",
   WARFARE_SET = "WarfareSet",
-  PERSUIT_SET = "PursuitSet"
+  PERSUIT_SET = "PursuitSet",
+  WEAKENING_SET = "WeakeningSet",
+  FERVOR_SET = "FervorSet"
 }
 
 export const SetTypeDisplay: Record<SetType, string> = {
@@ -47,7 +49,9 @@ export const SetTypeDisplay: Record<SetType, string> = {
   [SetType.REVERSAL_SET]: '逆袭',
   [SetType.RIPOSTE_SET]: '回击',
   [SetType.WARFARE_SET]: '开战',
-  [SetType.PERSUIT_SET]: '追击'
+  [SetType.PERSUIT_SET]: '追击',
+  [SetType.WEAKENING_SET]: '弱化',
+  [SetType.FERVOR_SET]: '全力'
 };
 
 export const SET_TYPES = Object.values(SetType);

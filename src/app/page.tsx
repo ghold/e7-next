@@ -7,6 +7,9 @@ import { EquipmentList } from '@/components/equipment/equipment-list';
 import { EquipmentDetail } from '@/components/equipment/equipment-detail';
 import { useRules } from '@/hooks/use-rules';
 import { useEquipment } from '@/hooks/use-equipment';
+import { getEquipmentStats } from '@/lib/equipment-parser';
+import { Equipment } from '@/constants';
+import { useState, useCallback } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -19,6 +22,12 @@ export default function HomePage() {
     isLoading, isLoadingFromCache, error, fileName, stats, cacheInfo,
     handleFileLoaded, handleEquipmentUpdate, handleDeleteEquipment, handleClearCache
   } = useEquipment(rules);
+  const [displayStats, setDisplayStats] = useState(stats);
+  // sync when full equipment set changes (new import / cache load)
+  if (displayStats === null && stats !== null) setDisplayStats(stats);
+  const handleFilteredChange = useCallback((filtered: Equipment[]) => {
+    setDisplayStats(getEquipmentStats(filtered) as typeof stats);
+  }, []);
 
   if (isLoadingFromCache || rulesLoading) {
     return (
@@ -104,7 +113,7 @@ export default function HomePage() {
               </div>
             )}
 
-            {stats && <EquipmentStats stats={stats} />}
+            {displayStats && <EquipmentStats stats={displayStats} />}
 
             <div className="border border-steel-800 rounded bg-card/30 overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-2.5 border-b border-steel-800 bg-steel-950/30">
@@ -116,6 +125,7 @@ export default function HomePage() {
                   equipment={equipment}
                   onEquipmentSelect={setSelectedEquipment}
                   onDelete={handleDeleteEquipment}
+                  onFilteredChange={handleFilteredChange}
                 />
               </div>
             </div>
@@ -131,12 +141,6 @@ export default function HomePage() {
           onEquipmentUpdate={handleEquipmentUpdate}
         />
       )}
-
-      <footer className="border-t border-steel-800/60 py-3 text-center">
-        <span className="text-[10px] font-mono text-steel-600 tracking-wider uppercase">
-          E7 GEAR ANALYSIS SYSTEM © {new Date().getFullYear()}
-        </span>
-      </footer>
     </div>
   );
 }

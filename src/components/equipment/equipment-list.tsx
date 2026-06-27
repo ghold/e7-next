@@ -154,9 +154,10 @@ interface EquipmentListProps {
   equipment: Equipment[];
   onEquipmentSelect?: (equipment: Equipment) => void;
   onDelete?: (id: number) => void;
+  onFilteredChange?: (filtered: Equipment[]) => void;
 }
 
-export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: EquipmentListProps) {
+export function EquipmentList({ equipment, onEquipmentSelect, onDelete, onFilteredChange }: EquipmentListProps) {
   const [sortField, setSortField] = useState<SortField>('level');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [selectedType, setSelectedType] = useState('all');
@@ -224,6 +225,10 @@ export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: Equipm
     }
     return result;
   }, [equipment, selectedType, selectedSet, selectedLevel, selectedPotential, selectedSubstat, minValue, maxValue]);
+
+  useEffect(() => {
+    onFilteredChange?.(filteredEquipment);
+  }, [filteredEquipment, onFilteredChange]);
 
   const sortedEquipment = useMemo(() => {
     return [...filteredEquipment].sort((a, b) => {
@@ -351,7 +356,7 @@ export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: Equipm
           <div className="space-y-1">
             <Label className="text-[10px] font-mono text-steel-500 uppercase tracking-wider">装备类型</Label>
             <Select value={selectedType} onValueChange={(v) => setSelectedType(v ?? 'all')}>
-              <SelectTrigger className="w-28 h-7 text-xs border-steel-700 bg-steel-900/70"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-28 h-7 text-xs border-steel-700 bg-steel-900/70"><span>{selectedType === 'all' ? '全部' : EquipmentTypeDisplay[selectedType as EquipmentType]}</span></SelectTrigger>
               <SelectContent className="border-steel-700 bg-steel-900">
                 <SelectItem value="all">全部</SelectItem>
                 {EQUIPMENT_TYPES.map(t => (
@@ -363,7 +368,7 @@ export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: Equipm
           <div className="space-y-1">
             <Label className="text-[10px] font-mono text-steel-500 uppercase tracking-wider">套装</Label>
             <Select value={selectedSet} onValueChange={(v) => setSelectedSet(v ?? 'all')}>
-              <SelectTrigger className="w-28 h-7 text-xs border-steel-700 bg-steel-900/70"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-28 h-7 text-xs border-steel-700 bg-steel-900/70"><span>{selectedSet === 'all' ? '全部' : SetTypeDisplay[selectedSet as SetType]}</span></SelectTrigger>
               <SelectContent className="border-steel-700 bg-steel-900">
                 <SelectItem value="all">全部</SelectItem>
                 {SET_TYPES.map(s => (
@@ -375,7 +380,9 @@ export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: Equipm
           <div className="space-y-1">
             <Label className="text-[10px] font-mono text-steel-500 uppercase tracking-wider">等级</Label>
             <Select value={selectedLevel} onValueChange={(v) => setSelectedLevel(v ?? 'all')}>
-              <SelectTrigger className="w-28 h-7 text-xs border-steel-700 bg-steel-900/70"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-28 h-7 text-xs border-steel-700 bg-steel-900/70">
+                <span>{{ all: '全部', '90': '90', '88': '88', below80: '80以下' }[selectedLevel] ?? selectedLevel}</span>
+              </SelectTrigger>
               <SelectContent className="border-steel-700 bg-steel-900">
                 <SelectItem value="all">全部</SelectItem>
                 <SelectItem value="90">90</SelectItem>
@@ -387,7 +394,9 @@ export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: Equipm
           <div className="space-y-1">
             <Label className="text-[10px] font-mono text-steel-500 uppercase tracking-wider">潜能</Label>
             <Select value={selectedPotential} onValueChange={(v) => setSelectedPotential(v ?? 'all')}>
-              <SelectTrigger className="w-36 h-7 text-xs border-steel-700 bg-steel-900/70"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-36 h-7 text-xs border-steel-700 bg-steel-900/70">
+                <span>{{ all: '全部', potential_gt_rule: '潜能分 > 规则分' }[selectedPotential] ?? selectedPotential}</span>
+              </SelectTrigger>
               <SelectContent className="border-steel-700 bg-steel-900">
                 <SelectItem value="all">全部</SelectItem>
                 <SelectItem value="potential_gt_rule">潜能分 &gt; 规则分</SelectItem>
@@ -397,7 +406,7 @@ export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: Equipm
           <div className="space-y-1">
             <Label className="text-[10px] font-mono text-steel-500 uppercase tracking-wider">副属性</Label>
             <Select value={selectedSubstat} onValueChange={(v) => setSelectedSubstat(v ?? 'all')}>
-              <SelectTrigger className="w-28 h-7 text-xs border-steel-700 bg-steel-900/70"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-28 h-7 text-xs border-steel-700 bg-steel-900/70"><span>{selectedSubstat === 'all' ? '全部' : StatTypeDisplay[selectedSubstat as StatType]}</span></SelectTrigger>
               <SelectContent className="border-steel-700 bg-steel-900">
                 <SelectItem value="all">全部</SelectItem>
                 {Object.entries(StatTypeDisplay).map(([key, label]) => (
@@ -408,11 +417,11 @@ export function EquipmentList({ equipment, onEquipmentSelect, onDelete }: Equipm
           </div>
           <div className="space-y-1">
             <Label className="text-[10px] font-mono text-steel-500 uppercase tracking-wider">最小值</Label>
-            <Input type="number" value={minValue} onChange={e => setMinValue(e.target.value)} className="w-20 h-7 text-xs border-steel-700 bg-steel-900/70" placeholder="Min" />
+            <Input type="number" value={minValue} onChange={e => setMinValue(e.target.value)} className="w-20 h-7 text-xs border-steel-700 bg-steel-900/70" placeholder="最小" />
           </div>
           <div className="space-y-1">
             <Label className="text-[10px] font-mono text-steel-500 uppercase tracking-wider">最大值</Label>
-            <Input type="number" value={maxValue} onChange={e => setMaxValue(e.target.value)} className="w-20 h-7 text-xs border-steel-700 bg-steel-900/70" placeholder="Max" />
+            <Input type="number" value={maxValue} onChange={e => setMaxValue(e.target.value)} className="w-20 h-7 text-xs border-steel-700 bg-steel-900/70" placeholder="最大" />
           </div>
           {hasActiveFilters && (
             <Button variant="ghost" size="sm" onClick={clearFilters} className="h-7 text-xs text-steel-400 hover:text-gold-400">

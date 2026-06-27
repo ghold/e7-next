@@ -42,6 +42,21 @@ export default function RootLayout({
           <TooltipProvider>
             {children}
           </TooltipProvider>
+          <footer className="mt-auto border-t border-border/40 bg-background/80">
+            <div className="container mx-auto flex h-9 items-center justify-center px-4 gap-3">
+              <span className="text-[10px] font-mono text-steel-500 tracking-wider uppercase">E7 GEAR ANALYSIS SYSTEM © {new Date().getFullYear()}</span>
+              <span className="text-[10px] font-mono text-steel-600">·</span>
+              <span className="text-[10px] font-mono text-steel-500 tracking-wider uppercase">POWERED BY</span>
+              <a
+                href="https://www.e7bot.top/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-mono text-gold-500 hover:text-gold-300 tracking-wider uppercase transition-colors"
+              >
+                百里机器人
+              </a>
+            </div>
+          </footer>
           <Toaster />
         </ThemeProvider>
       </body>
