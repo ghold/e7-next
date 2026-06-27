@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Epic Seven (第七史诗) equipment analysis tool. Users import equipment JSON data, the app scores each piece against a CSV-based rule engine, and displays ranked results.
 
+## Environment
+
+**Node.js:** v20 (use `nvm use 20` or ensure `node -v` reports v20.x before running any commands)
+
 ## Commands
 
 ```bash

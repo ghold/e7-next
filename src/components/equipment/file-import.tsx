@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { Upload, FileJson, Loader2, Database } from 'lucide-react';
+import { Upload, FileJson, Loader2, Database, Copy, Check, ExternalLink, Cloud } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
@@ -13,11 +13,29 @@ interface FileImportProps {
   compact?: boolean;
 }
 
+const QUARK_SHARE_TEXT = `我用夸克网盘给你分享了「FribbelsE7Optimizer_lastest」，点击链接或复制整段内容，打开「夸克APP」即可获取。
+/~eadd3ZGAKh~:/
+链接：https://pan.quark.cn/s/b4bae4c9b4d0
+提取码：QTjz`;
+
+const GITHUB_URL = 'https://github.com/RexQian/Fribbels-Epic-7-Optimizer';
+
 export function FileImport({ onFileLoaded, accept = '.txt,.json', className, compact }: FileImportProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCopyQuark = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(QUARK_SHARE_TEXT);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // fallback: do nothing silently
+    }
+  }, []);
 
   const processFile = useCallback(async (file: File) => {
     setIsLoading(true);
@@ -167,6 +185,52 @@ export function FileImport({ onFileLoaded, accept = '.txt,.json', className, com
           <AlertDescription className="font-mono text-xs">{error}</AlertDescription>
         </Alert>
       )}
+
+      {/* Resource links */}
+      <div className="space-y-1.5 pt-1">
+        {/* Quark share */}
+        <button
+          type="button"
+          onClick={handleCopyQuark}
+          className={cn(
+            "w-full flex items-center gap-2.5 px-3 py-2 rounded border text-left transition-all duration-200",
+            "border-steel-700/60 bg-steel-900/30 text-steel-400",
+            "hover:border-gold-500/30 hover:text-gold-400 hover:bg-gold-500/[0.03]",
+            copied && "border-green-500/40 text-green-400 bg-green-500/[0.04]"
+          )}
+        >
+          <Cloud className={cn("h-3.5 w-3.5 shrink-0", copied ? "text-green-400" : "text-steel-500")} />
+          <span className="flex-1 text-xs font-mono truncate">
+            配装器（支持全力、弱化） 夸克网盘
+            <span className={cn("ml-1.5 text-[10px]", copied ? "text-green-400" : "text-steel-600")}>
+              (点击复制分享信息)
+            </span>
+          </span>
+          {copied ? (
+            <Check className="h-3.5 w-3.5 shrink-0 text-green-400" />
+          ) : (
+            <Copy className="h-3.5 w-3.5 shrink-0 text-steel-600" />
+          )}
+        </button>
+
+        {/* GitHub link */}
+        <a
+          href={GITHUB_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            "w-full flex items-center gap-2.5 px-3 py-2 rounded border text-left transition-all duration-200",
+            "border-steel-700/60 bg-steel-900/30 text-steel-400",
+            "hover:border-gold-500/30 hover:text-gold-400 hover:bg-gold-500/[0.03]"
+          )}
+        >
+          <ExternalLink className="h-3.5 w-3.5 shrink-0 text-steel-500" />
+          <span className="flex-1 text-xs font-mono truncate">
+            配装器 GitHub
+            <span className="ml-1.5 text-[10px] text-steel-600">(点击跳转)</span>
+          </span>
+        </a>
+      </div>
     </div>
   );
 }
